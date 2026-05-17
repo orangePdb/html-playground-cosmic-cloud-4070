@@ -1,2 +1,2 @@
-# html-playground-cosmic-cloud-4070
-Published from HTML Playground
+hi. this is a TEST app made with chatgpt.
+It contains a fuckin hacker simulator (KIDDING) and i hope u like it.
