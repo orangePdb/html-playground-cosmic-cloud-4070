@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEON OS ULTIMATE ARG</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:monospace;
+}
+
+body{
+  background:#000;
+  color:#00ff9f;
+  overflow:hidden;
+}
+
+/* =========================
+   BOOT SCREEN
+========================= */
+
+#boot{
+  position:fixed;
+  inset:0;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:99999;
+}
+
+.bootText{
+  font-size:22px;
+  margin:10px;
+}
+
+/* =========================
+   TERMINAL
+========================= */
+
+#terminal{
+  display:none;
+  flex-direction:column;
+  height:100vh;
+}
+
+#out{
+  flex:1;
+  overflow-y:auto;
+  padding:15px;
+  white-space:pre-wrap;
+}
+
+#bar{
+  display:flex;
+  border-top:1px solid #00ff9f;
+}
+
+#cmd{
+  flex:1;
+  background:black;
+  color:#00ff9f;
+  border:none;
+  outline:none;
+  padding:14px;
+  font-size:16px;
+}
+
+#btn{
+  width:120px;
+  background:black;
+  color:#00ff9f;
+  border:none;
+  border-left:1px solid #00ff9f;
+  cursor:pointer;
+}
+
+#btn:hover{
+  background:#00ff9f;
+  color:black;
+}
+
+/* =========================
+   HELP
+========================= */
+
+.helpBox{
+  border:1px solid #00ff9f;
+  padding:10px;
+  margin-top:10px;
+}
+
+.helpTabs button{
+  margin:5px;
+  padding:8px 12px;
+  background:black;
+  color:#00ff9f;
+  border:1px solid #00ff9f;
+  cursor:pointer;
+}
+
+.helpTabs button:hover{
+  background:#00ff9f;
+  color:black;
+}
+
+/* =========================
+   QUIZ
+========================= */
+
+#quiz{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:black;
+  z-index:9999;
+  padding:20px;
+  overflow:auto;
+}
+
+.answer{
+  border:1px solid #00ff9f;
+  padding:12px;
+  margin-top:10px;
+  cursor:pointer;
+}
+
+.answer:hover{
+  background:#00ff9f;
+  color:black;
+}
+
+/* =========================
+   NODE
+========================= */
+
+#nodeScreen{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#050505;
+  z-index:999999;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  color:white;
+}
+
+#ip{
+  font-size:30px;
+  color:#00e5ff;
+  margin:20px;
+}
+
+/* =========================
+   SECRET SIGNAL
+========================= */
+
+#secretBtn{
+  display:none;
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:red;
+  color:white;
+  border:none;
+  padding:15px;
+  cursor:pointer;
+  box-shadow:0 0 20px red;
+  z-index:999999;
+}
+
+/* =========================
+   GLITCH
+========================= */
+
+.glitch{
+  animation:glitch .15s infinite;
+}
+
+@keyframes glitch{
+  0%{transform:translate(0)}
+  25%{transform:translate(2px,-2px)}
+  50%{transform:translate(-2px,2px)}
+  75%{transform:translate(2px,2px)}
+  100%{transform:translate(0)}
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- BOOT -->
+<div id="boot">
+
+<div class="bootText">
+⚠ ONLY FOR ENTERTAINMENT PURPOSES ⚠
+</div>
+
+<div class="bootText">
+type /boot to continue
+</div>
+
+<input id="bootInput"
+style="
+background:black;
+color:#00ff9f;
+border:1px solid #00ff9f;
+padding:10px;
+margin-top:20px;
+">
+
+</div>
+
+<!-- TERMINAL -->
+<div id="terminal">
+
+<div id="out"></div>
+
+<div id="bar">
+
+<input id="cmd"
+placeholder="type command...">
+
+<button id="btn">
+ENTER
+</button>
+
+</div>
+
+</div>
+
+<!-- QUIZ -->
+<div id="quiz"></div>
+
+<!-- NODE -->
+<div id="nodeScreen">
+
+<h1>📡 NODE ACTIVE</h1>
+
+<div id="ip">
+loading...
+</div>
+
+<div id="status">
+detecting connection...
+</div>
+
+<button id="ipinfoBtn">
+OPEN IPINFO
+</button>
+
+<button id="asnBtn">
+OPEN ASN TRACE
+</button>
+
+<button onclick="closeNode()">
+CLOSE NODE
+</button>
+
+</div>
+
+<!-- SECRET -->
+<button id="secretBtn">
+⚠ SIGNAL
+</button>
+
+<script>
+
+/* =========================
+   VARIABLES
+========================= */
+
+const CMD = {};
+
+let secretUnlocked = false;
+
+/* =========================
+   BOOT
+========================= */
+
+bootInput.addEventListener("keydown",(e)=>{
+
+  if(e.key === "Enter"){
+
+    if(bootInput.value === "/boot"){
+
+      boot.style.display = "none";
+
+      terminal.style.display = "flex";
+
+      bootSystem();
+
+    }
+
+  }
+
+});
+
+function bootSystem(){
+
+  log("⚠ NEON OS ARG");
+  log("login or guest");
+
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+let mode = "start";
+
+function loginSystem(v){
+
+  if(mode === "start"){
+
+    if(v === "login"){
+
+      mode = "loginUser";
+
+      log("username:");
+
+      return true;
+
+    }
+
+    if(v === "guest"){
+
+      log("guest mode active ✔");
+
+      mode = "terminal";
+
+      return true;
+
+    }
+
+  }
+
+  if(mode === "loginUser"){
+
+    if(v === "conyDevv"){
+
+      mode = "loginPass";
+
+      log("password:");
+
+      return true;
+
+    }
+
+  }
+
+  if(mode === "loginPass"){
+
+    if(v === "BelugaTheCat"){
+
+      log("access granted ✔");
+
+      mode = "terminal";
+
+      return true;
+
+    }else{
+
+      log("wrong password");
+
+      mode = "start";
+
+      return true;
+
+    }
+
+  }
+
+  return false;
+
+}
+
+/* =========================
+   LOG
+========================= */
+
+function log(t){
+
+  out.innerHTML += t + "\n";
+
+  out.scrollTop = out.scrollHeight;
+
+}
+
+/* =========================
+   GLITCH ENGINE
+========================= */
+
+setInterval(()=>{
+
+  if(Math.random() < 0.05){
+
+    const msgs = [
+
+      ">> unknown process running",
+      ">> memory corruption detected",
+      ">> ARG layer interference",
+      ">> someone is inside the system",
+      ">> signal fragment detected"
+
+    ];
+
+    log(msgs[Math.floor(Math.random()*msgs.length)]);
+
+  }
+
+},7000);
+
+/* =========================
+   SECRET BUTTON AFTER 5 MIN
+========================= */
+
+setTimeout(()=>{
+
+  secretBtn.style.display = "block";
+
+},300000);
+
+secretBtn.onclick = ()=>{
+
+  log("⚠ hidden signal detected");
+
+  openNode();
+
+};
+
+/* =========================
+   HELP
+========================= */
+
+CMD["/help"] = ()=>{
+
+  out.innerHTML = "";
+
+  const div = document.createElement("div");
+
+  div.className = "helpBox";
+
+  div.innerHTML = `
+
+<div class="helpTabs">
+
+<button onclick="showTab('basic')">
+BASIC
+</button>
+
+<button onclick="showTab('arg')">
+ARG
+</button>
+
+<button onclick="showTab('secret')">
+SECRET
+</button>
+
+</div>
+
+<div id="tabContent">
+loading...
+</div>
+
+`;
+
+  out.appendChild(div);
+
+  showTab("basic");
+
+};
+
+function showTab(tab){
+
+  const el = document.getElementById("tabContent");
+
+  if(tab === "basic"){
+
+    el.innerHTML = `
+
+/help
+/clear
+/status
+/time
+/boot
+/quiz
+/about
+/version
+/ping
+
+`;
+
+  }
+
+  if(tab === "arg"){
+
+    el.innerHTML = `
+
+/wanaip
+/signal
+/decrypt
+/node
+/node_7
+/scan
+/trace
+/connect
+/layer_1
+/layer_2
+/layer_3
+
+`;
+
+  }
+
+  if(tab === "secret"){
+
+    if(!secretUnlocked){
+
+      el.innerHTML = `
+SECRET LOCKED 🔒
+hint: activate node 7
+`;
+
+      return;
+
+    }
+
+    el.innerHTML = `
+
+/origin
+/theyarewatching
+/neon_is_alive
+/final_node
+/ghost_protocol
+/memory_dump
+/entity
+/void
+/anomaly
+
+`;
+
+  }
+
+}
+
+/* =========================
+   BASIC COMMANDS
+========================= */
+
+CMD["/clear"] = ()=>out.innerHTML="";
+
+CMD["/status"] = ()=>log("SYSTEM OK ✔");
+
+CMD["/time"] = ()=>log(new Date());
+
+CMD["/boot"] = ()=>log("already booted");
+
+CMD["/about"] = ()=>log("NEON OS ARG");
+
+CMD["/version"] = ()=>log("v7.4.2");
+
+CMD["/ping"] = ()=>log("PING OK");
+
+/* =========================
+   ARG COMMANDS
+========================= */
+
+CMD["/wanaip"] = ()=>{
+
+  log("📡 node found");
+
+  setTimeout(()=>{
+
+    openNode();
+
+  },1000);
+
+};
+
+CMD["/signal"] = ()=>log("SIGNAL 01101110");
+
+CMD["/decrypt"] = ()=>log("DECRYPTING...");
+
+CMD["/node"] = ()=>log("NODE ACCESS");
+
+CMD["/node_7"] = ()=>{
+
+  log("🧠 node 7 activated");
+  log("👁 secret system awakened");
+
+  secretUnlocked = true;
+
+  document.body.style.boxShadow =
+  "0 0 80px #00ff9f inset";
+
+};
+
+CMD["/scan"] = ()=>log("SCANNING NETWORK...");
+
+CMD["/trace"] = ()=>log("TRACE ACTIVE");
+
+CMD["/connect"] = ()=>log("CONNECTING...");
+
+CMD["/layer_1"] = ()=>log("LAYER 1 OPEN");
+
+CMD["/layer_2"] = ()=>log("LAYER 2 OPEN");
+
+CMD["/layer_3"] = ()=>log("LAYER 3 LOCKED");
+
+/* =========================
+   SECRET COMMANDS
+========================= */
+
+CMD["/origin"] = ()=>{
+
+  log("YOU WERE NEVER SUPPOSED TO FIND THIS");
+
+};
+
+CMD["/theyarewatching"] = ()=>{
+
+  log("👁 observers detected");
+
+};
+
+CMD["/neon_is_alive"] = ()=>{
+
+  log("AI STATUS: awake");
+
+};
+
+CMD["/final_node"] = ()=>{
+
+  log("FINAL NODE LOCKED");
+
+};
+
+CMD["/ghost_protocol"] = ()=>{
+
+  log("ghost protocol enabled");
+
+};
+
+CMD["/memory_dump"] = ()=>{
+
+  log("memory fragments corrupted");
+
+};
+
+CMD["/entity"] = ()=>{
+
+  log("ENTITY DETECTED");
+
+};
+
+CMD["/void"] = ()=>{
+
+  log("THE VOID STARES BACK");
+
+};
+
+CMD["/anomaly"] = ()=>{
+
+  log("ANOMALY LEVEL HIGH");
+
+};
+
+/* =========================
+   QUIZ
+========================= */
+
+CMD["/quiz"] = ()=>{
+
+  quiz.style.display = "block";
+
+  quiz.innerHTML = `
+
+<h1>🎮 ORANGE ARG QUIZ</h1>
+
+<p>
+What command opens the hidden node?
+</p>
+
+<div class="answer"
+onclick="quizAnswer(false)">
+/open
+</div>
+
+<div class="answer"
+onclick="quizAnswer(true)">
+/wanaip
+</div>
+
+<div class="answer"
+onclick="quizAnswer(false)">
+/run
+</div>
+
+<div class="answer"
+onclick="quizAnswer(false)">
+/boot
+</div>
+
+<br>
+
+<button onclick="closeQuiz()">
+EXIT QUIZ
+</button>
+
+`;
+
+};
+
+function quizAnswer(correct){
+
+  if(correct){
+
+    alert("CORRECT ✔");
+
+  }else{
+
+    alert("WRONG ✖");
+
+  }
+
+}
+
+function closeQuiz(){
+
+  quiz.style.display = "none";
+
+}
+
+/* =========================
+   NODE SCREEN + IP
+========================= */
+
+function openNode(){
+
+  nodeScreen.style.display = "flex";
+
+  let currentIP = "";
+
+  fetch("https://api.ipify.org?format=json")
+  .then(r=>r.json())
+  .then(data=>{
+
+    currentIP = data.ip;
+
+    ip.innerText = currentIP;
+
+    status.innerText =
+    "connection established ✔";
+
+    ipinfoBtn.onclick = ()=>{
+
+      window.location.href =
+      `https://ipinfo.io/${currentIP}`;
+
+    };
+
+    asnBtn.onclick = ()=>{
+
+      window.location.href =
+      `https://host.io/${currentIP}`;
+
+    };
+
+  })
+  .catch(()=>{
+
+    ip.innerText = "ERROR";
+
+  });
+
+}
+
+function closeNode(){
+
+  nodeScreen.style.display = "none";
+
+}
+
+/* =========================
+   1000 COMMAND ENGINE
+========================= */
+
+for(let i=0;i<1000;i++){
+
+  CMD["/cmd"+i] = ()=>{
+
+    log("executed virtual process "+i);
+
+  };
+
+}
+
+/* =========================
+   RUN
+========================= */
+
+function run(v){
+
+  if(mode !== "terminal"){
+
+    if(loginSystem(v)){
+
+      return;
+
+    }
+
+  }
+
+  log("> " + v);
+
+  if(CMD[v]){
+
+    CMD[v]();
+
+  }else{
+
+    log("command not found");
+
+  }
+
+}
+
+/* =========================
+   INPUT
+========================= */
+
+cmd.addEventListener("keydown",(e)=>{
+
+  if(e.key === "Enter"){
+
+    run(cmd.value);
+
+    cmd.value = "";
+
+  }
+
+});
+
+btn.onclick = ()=>{
+
+  run(cmd.value);
+
+  cmd.value = "";
+
+};
+
+</script>
+
+</body>
+</html>
